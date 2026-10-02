@@ -1,7 +1,8 @@
 # Changelog
 
-## Unreleased
+## 0.1.1 - 2026-10-02
 
+- Limit ESPHome text payloads to Home Assistant's 255-character entity limit.
 - Enable ESPHome's JSON component and return the required parse result from the
   display payload lambda so the Ultra firmware compiles.
 

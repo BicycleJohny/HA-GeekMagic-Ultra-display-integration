@@ -3,7 +3,7 @@
 import json
 import unittest
 
-from custom_components.geekmagic.const import MAX_PAYLOAD_BYTES
+from custom_components.geekmagic.const import MAX_PAYLOAD_LENGTH
 from custom_components.geekmagic.renderer import render_payload
 
 
@@ -81,7 +81,7 @@ class RenderPayloadTests(unittest.TestCase):
         self.assertEqual(len(payload["items"]), 4)
         self.assertEqual(payload["layout"], "list")
         self.assertEqual(payload["theme"], "midnight")
-        self.assertLessEqual(len(encoded.encode("utf-8")), MAX_PAYLOAD_BYTES)
+        self.assertLessEqual(len(encoded), MAX_PAYLOAD_LENGTH)
 
     def test_missing_entity_has_readable_fallback(self):
         payload = json.loads(

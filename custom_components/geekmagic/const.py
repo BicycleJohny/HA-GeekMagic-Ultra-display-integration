@@ -13,4 +13,4 @@ CONF_THEME: Final = "theme"
 LAYOUTS: Final = ("list", "hero", "compact")
 THEMES: Final = ("midnight", "ocean", "amber", "light")
 MAX_ITEMS: Final = 4
-MAX_PAYLOAD_BYTES: Final = 480
+MAX_PAYLOAD_LENGTH: Final = 255

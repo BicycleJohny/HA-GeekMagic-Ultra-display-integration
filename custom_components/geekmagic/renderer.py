@@ -12,7 +12,7 @@ from .const import (
     CONF_TITLE,
     LAYOUTS,
     MAX_ITEMS,
-    MAX_PAYLOAD_BYTES,
+    MAX_PAYLOAD_LENGTH,
     THEMES,
 )
 
@@ -73,7 +73,7 @@ def render_payload(hass: Any, options: dict[str, Any]) -> str:
     }
 
     encoded = json.dumps(payload, ensure_ascii=False, separators=(",", ":"))
-    while len(encoded.encode("utf-8")) > MAX_PAYLOAD_BYTES:
+    while len(encoded) > MAX_PAYLOAD_LENGTH:
         strings = [
             (len(value), item, key)
             for item in items

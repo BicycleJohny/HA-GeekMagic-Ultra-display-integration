@@ -59,8 +59,9 @@ the integration's options.
 
 Numeric states include their `unit_of_measurement` when available. Binary
 `on`/`off` states are shown as Zapnuto/Vypnuto. Missing or unavailable entities
-are rendered as Nedostupné. The payload is bounded for ESP8266 memory and
-supports up to four selected entities.
+are rendered as Nedostupné. The payload is limited to 255 characters to match
+Home Assistant's ESPHome text-entity limit. It supports up to four selected
+entities; long labels and values are shortened as needed to fit.
 
 ## Data path
 

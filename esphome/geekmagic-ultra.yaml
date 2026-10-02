@@ -56,7 +56,7 @@ text:
     optimistic: true
     restore_value: false
     mode: text
-    max_length: 512
+    max_length: 255
     on_value:
       then:
         - component.update: disp
