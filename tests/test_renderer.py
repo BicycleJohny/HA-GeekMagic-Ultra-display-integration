@@ -81,7 +81,7 @@ class RenderPayloadTests(unittest.TestCase):
         self.assertEqual(len(payload["items"]), 4)
         self.assertEqual(payload["layout"], "list")
         self.assertEqual(payload["theme"], "midnight")
-        self.assertLessEqual(len(encoded), MAX_PAYLOAD_LENGTH)
+        self.assertLessEqual(len(encoded.encode("utf-8")), MAX_PAYLOAD_LENGTH)
 
     def test_missing_entity_has_readable_fallback(self):
         payload = json.loads(
@@ -89,6 +89,55 @@ class RenderPayloadTests(unittest.TestCase):
         )
 
         self.assertEqual(payload["items"][0]["value"], "Nedostupné")
+
+    def test_payload_with_czech_characters_fits_utf8_byte_limit(self):
+        hass = FakeHass(
+            {
+                "sensor.time": FakeState(
+                    "2026-10-02 15:37:47",
+                    {"friendly_name": "Master System Time"},
+                ),
+                "sensor.outdoor": FakeState(
+                    "17.5",
+                    {
+                        "friendly_name": "Meteostanice Outdoor Temperature",
+                        "unit_of_measurement": "°C",
+                    },
+                ),
+                "sensor.power": FakeState(
+                    "352",
+                    {
+                        "friendly_name": "GoodWe MPPT1 Power",
+                        "unit_of_measurement": "W",
+                    },
+                ),
+                "sensor.battery": FakeState(
+                    "100",
+                    {
+                        "friendly_name": "GoodWe Battery State of Charge",
+                        "unit_of_measurement": "%",
+                    },
+                ),
+            }
+        )
+
+        encoded = render_payload(
+            hass,
+            {
+                "title": "GeekMagic",
+                "layout": "hero",
+                "theme": "midnight",
+                "sources": [
+                    "sensor.time",
+                    "sensor.outdoor",
+                    "sensor.power",
+                    "sensor.battery",
+                ],
+            },
+        )
+
+        self.assertLessEqual(len(encoded.encode("utf-8")), MAX_PAYLOAD_LENGTH)
+        self.assertEqual(len(json.loads(encoded)["items"]), 4)
 
 
 if __name__ == "__main__":

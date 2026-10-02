@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.1.2 - 2026-10-02
+
+- Enforce the ESPHome text entity limit using UTF-8 byte length and safely
+  shorten multibyte labels and values.
+
 ## 0.1.1 - 2026-10-02
 
 - Limit ESPHome text payloads to Home Assistant's 255-character entity limit.

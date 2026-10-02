@@ -73,17 +73,25 @@ def render_payload(hass: Any, options: dict[str, Any]) -> str:
     }
 
     encoded = json.dumps(payload, ensure_ascii=False, separators=(",", ":"))
-    while len(encoded) > MAX_PAYLOAD_LENGTH:
+    while len(encoded.encode("utf-8")) > MAX_PAYLOAD_LENGTH:
         strings = [
-            (len(value), item, key)
+            (len(value.encode("utf-8")), item, key)
             for item in items
             for key, value in item.items()
-            if len(value) > 8
+            if value
         ]
+        if payload["title"]:
+            strings.append(
+                (
+                    len(payload["title"].encode("utf-8")),
+                    payload,
+                    "title",
+                )
+            )
         if not strings:
             break
         _, item, key = max(strings, key=lambda entry: entry[0])
-        item[key] = _truncate(item[key], len(item[key]) - 4)
+        item[key] = item[key][:-1]
         encoded = json.dumps(payload, ensure_ascii=False, separators=(",", ":"))
 
     return encoded
