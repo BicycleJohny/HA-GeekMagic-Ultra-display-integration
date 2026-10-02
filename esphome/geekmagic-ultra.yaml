@@ -27,6 +27,8 @@ wifi:
 
 captive_portal:
 
+json:
+
 external_components:
   - source:
       type: git
@@ -92,7 +94,7 @@ display:
       auto fg = Color(245, 248, 255);
       auto accent = Color(0, 210, 255);
       auto muted = Color(135, 150, 170);
-      json::parse_json(id(display_payload).state, [&](JsonObject root) {
+      json::parse_json(id(display_payload).state, [&](JsonObject root) -> bool {
         const char *theme = root["theme"] | "midnight";
         if (strcmp(theme, "ocean") == 0) {
           bg = Color(7, 18, 36);
@@ -142,4 +144,5 @@ display:
             y += step;
           }
         }
+        return true;
       });
