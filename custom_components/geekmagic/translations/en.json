@@ -1,0 +1,42 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Connect GeekMagic display",
+        "description": "Select the ESPHome “Display payload” text entity and up to four entities to show.",
+        "data": {
+          "payload_entity": "ESPHome payload text entity",
+          "title": "Display title",
+          "sources": "Entities to display (up to 4)",
+          "layout": "Layout",
+          "theme": "Color theme"
+        }
+      }
+    },
+    "error": {
+      "too_many_sources": "Select no more than four source entities.",
+      "payload_is_source": "The payload text entity cannot also be a data source."
+    },
+    "abort": {
+      "already_configured": "This text entity is already configured."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "GeekMagic display settings",
+        "description": "Saved changes are sent to the display over ESPHome.",
+        "data": {
+          "title": "Display title",
+          "sources": "Entities to display (up to 4)",
+          "layout": "Layout",
+          "theme": "Color theme"
+        }
+      }
+    },
+    "error": {
+      "too_many_sources": "Select no more than four source entities.",
+      "payload_is_source": "The payload text entity cannot also be a data source."
+    }
+  }
+}

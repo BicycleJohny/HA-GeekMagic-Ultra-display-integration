@@ -1,0 +1,145 @@
+substitutions:
+  device_name: geekmagic-ultra
+  friendly_name: GeekMagic Ultra
+
+esphome:
+  name: ${device_name}
+  friendly_name: ${friendly_name}
+
+esp8266:
+  board: esp01_1m
+
+logger:
+
+api:
+  encryption:
+    key: !secret api_encryption_key
+
+ota:
+  - platform: esphome
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+  ap:
+    ssid: "${friendly_name} Fallback"
+    password: !secret fallback_password
+
+captive_portal:
+
+external_components:
+  - source:
+      type: git
+      url: https://github.com/rletendu/esphome.git
+      ref: st7789_nobuffer_202312
+    components: [st7789v]
+
+spi:
+  clk_pin: GPIO14
+  mosi_pin: GPIO13
+  interface: hardware
+
+font:
+  - file: "gfonts://Roboto"
+    id: font_small
+    size: 18
+  - file: "gfonts://Roboto"
+    id: font_large
+    size: 38
+
+text:
+  - platform: template
+    name: "Display payload"
+    id: display_payload
+    optimistic: true
+    restore_value: false
+    mode: text
+    max_length: 512
+    on_value:
+      then:
+        - component.update: disp
+
+output:
+  - platform: esp8266_pwm
+    pin:
+      number: GPIO5
+      inverted: true
+    frequency: 1000 Hz
+    id: backlight_pwm
+
+light:
+  - platform: monochromatic
+    output: backlight_pwm
+    name: "Display backlight"
+    id: backlight
+    restore_mode: ALWAYS_ON
+
+display:
+  - platform: st7789v
+    model: Custom
+    width: 240
+    height: 240
+    offset_width: 0
+    offset_height: 0
+    dc_pin: GPIO0
+    reset_pin: GPIO2
+    spi_mode: mode3
+    eightbitcolor: true
+    update_interval: never
+    id: disp
+    lambda: |-
+      auto bg = Color(0, 0, 0);
+      auto fg = Color(245, 248, 255);
+      auto accent = Color(0, 210, 255);
+      auto muted = Color(135, 150, 170);
+      json::parse_json(id(display_payload).state, [&](JsonObject root) {
+        const char *theme = root["theme"] | "midnight";
+        if (strcmp(theme, "ocean") == 0) {
+          bg = Color(7, 18, 36);
+          fg = Color(230, 244, 255);
+          accent = Color(0, 190, 255);
+          muted = Color(120, 170, 205);
+        } else if (strcmp(theme, "amber") == 0) {
+          bg = Color(12, 8, 2);
+          fg = Color(255, 236, 190);
+          accent = Color(255, 166, 35);
+          muted = Color(190, 145, 75);
+        } else if (strcmp(theme, "light") == 0) {
+          bg = Color(245, 247, 250);
+          fg = Color(30, 38, 50);
+          accent = Color(0, 105, 190);
+          muted = Color(105, 115, 130);
+        }
+        it.filled_rectangle(0, 0, 240, 240, bg);
+
+        const char *title = root["title"] | "GeekMagic";
+        const char *layout = root["layout"] | "list";
+        auto items = root["items"].as<JsonArray>();
+        it.printf(12, 12, id(font_small), accent, "%s", title);
+        it.line(12, 42, 228, 42, muted);
+
+        if (strcmp(layout, "hero") == 0 && items.size() > 0) {
+          JsonObject first = items[0];
+          const char *label = first["label"] | "";
+          const char *value = first["value"] | "--";
+          it.printf(14, 58, id(font_small), muted, "%s", label);
+          it.printf(14, 91, id(font_large), fg, "%s", value);
+          int y = 158;
+          for (size_t i = 1; i < items.size() && i < 4; i++) {
+            JsonObject item = items[i];
+            it.printf(14, y, id(font_small), accent, "%s", item["label"] | "");
+            it.printf(128, y, id(font_small), fg, "%s", item["value"] | "");
+            y += 25;
+          }
+        } else {
+          int y = strcmp(layout, "compact") == 0 ? 53 : 57;
+          int step = strcmp(layout, "compact") == 0 ? 42 : 45;
+          for (JsonObject item : items) {
+            const char *label = item["label"] | "";
+            const char *value = item["value"] | "--";
+            it.printf(14, y, id(font_small), accent, "%s", label);
+            it.printf(14, y + 21, id(font_small), fg, "%s", value);
+            y += step;
+          }
+        }
+      });

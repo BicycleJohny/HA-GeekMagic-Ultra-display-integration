@@ -1,0 +1,42 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Připojit GeekMagic displej",
+        "description": "Vyberte textovou entitu ESPHome „Display payload“ a až čtyři entity, které se mají zobrazit.",
+        "data": {
+          "payload_entity": "ESPHome textová entita payloadu",
+          "title": "Nadpis displeje",
+          "sources": "Entity k zobrazení (maximálně 4)",
+          "layout": "Rozložení",
+          "theme": "Barevné schéma"
+        }
+      }
+    },
+    "error": {
+      "too_many_sources": "Vyberte nejvýše čtyři zdrojové entity.",
+      "payload_is_source": "Textová entita payloadu nemůže být zároveň zdrojem dat."
+    },
+    "abort": {
+      "already_configured": "Tato textová entita je již nakonfigurována."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Nastavení displeje GeekMagic",
+        "description": "Změny se po uložení odešlou do displeje přes ESPHome.",
+        "data": {
+          "title": "Nadpis displeje",
+          "sources": "Entity k zobrazení (maximálně 4)",
+          "layout": "Rozložení",
+          "theme": "Barevné schéma"
+        }
+      }
+    },
+    "error": {
+      "too_many_sources": "Vyberte nejvýše čtyři zdrojové entity.",
+      "payload_is_source": "Textová entita payloadu nemůže být zároveň zdrojem dat."
+    }
+  }
+}
